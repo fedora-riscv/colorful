@@ -3,7 +3,7 @@
 
 Name:          colorful
 Version:       1.2
-Release:       10%{?dist}
+Release:       11%{?dist}
 Summary:       Side-view shooter game
 License:       zlib with acknowledgement
 
@@ -14,9 +14,14 @@ Source0:       https://github.com/suve/%{repo_name}/archive/%{repo_commit}.tar.g
 # However, since FPC 3.0, the compiler includes an smpeg-disabled version of SDL_Mixer by default.
 # The patch removes the bundled library, and makes the game code 
 # use the compiler-provided smpeg-disabled library instead.
-Patch0:        %{name}-%{version}.patch
+Patch0:        %{name}-removes-bundled-sdlmixer.patch
 
-Requires:      colorful-data = %{version}
+# While other architectures build without problems, the compiler on ppc64 seems to be particularly picky.
+# This patch fixes build errors on ppc64.
+Patch1:        %{name}-ppc64-fixes.patch
+
+
+Requires:      colorful-data = %{version}-%{release}
 
 # Needed for compilation
 BuildRequires: make, fpc >= 3.0, glibc-devel, SDL-devel, SDL_image-devel, SDL_mixer-devel, mesa-libGL-devel
@@ -24,6 +29,9 @@ BuildRequires: make, fpc >= 3.0, glibc-devel, SDL-devel, SDL_image-devel, SDL_mi
 # Needed to properly build the RPM
 BuildRequires: desktop-file-utils, libappstream-glib
 
+# FPC is not available on all architectures, so we need to skip the broken ones.
+# The following line is straight out copy-pasted from fpc.spec.
+ExclusiveArch:  %{arm} %{ix86} x86_64 ppc ppc64
 
 %description
 Colorful is a simple side-view shooter game, where the protagonist 
@@ -43,6 +51,7 @@ Data files (graphics, maps, sounds) required to play Colorful.
 %prep
 %setup -q -n %{repo_name}-%{repo_commit}
 %patch0 -p1
+%patch1 -p1
 
 %build 
 cd src/
@@ -121,6 +130,13 @@ fi
 
 
 %changelog
+* Wed Jun 07 2017 Artur Iwicki <fedora@svgames.pl> 1.2-11
+- Rename the SDL_Mixer-removing patch to a more descriptive name
+- Add a patch file that addresses build failures on ppc64
+- Add an equal-release requirement for the -data package in Requires
+- Omit architectures where build fails due to FPC being unavailable
+  (done by copy-paste'ing the ExclusiveArch list from fpc.spec)
+
 * Sat May 20 2017 suve <veg@svgames.pl> 1.2-10
 - Remove /usr/share/suve/colorful/ from files-list 
   (alredy covered by /usr/share/suve)

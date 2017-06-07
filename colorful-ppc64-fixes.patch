@@ -1,0 +1,13 @@
+diff --git a/src/ld25.pas b/src/ld25.pas
+index cc28c48..162f630 100644
+--- a/src/ld25.pas
++++ b/src/ld25.pas
+@@ -141,7 +141,7 @@ Function Menu():Char;
+    Var Choice:Char; dt,XPos,YPos:uInt; Col:Sour.PColour; IHasSaves:Boolean; GM:TGameMode;
+    begin
+    XPos:=Length('I - INTRODUCTION');
+-   XPos:=Trunc(((Font^.SpaX*(XPos-1))+Font^.ChrW)*2);
++   XPos:=((Font^.SpaX*(XPos-1))+Font^.ChrW)*2;
+    XPos:=(RESOL_W - XPos) div 2;
+    IHasSaves:=False;
+    For GM:=Low(GM) to High(GM) do If (SaveExists[GM]) then IHasSaves:=True;
