@@ -1,9 +1,10 @@
 %global repo_name LD25
 %global repo_commit ee1ca09e36e5d1290295a7def567f31f1b551300 
+%global shortcommit %(c=%{repo_commit}; echo ${c:0:7})
 
 Name:          colorful
 Version:       1.2
-Release:       11%{?dist}
+Release:       12.20170412.git.%{shortcommit}%{?dist}
 Summary:       Side-view shooter game
 License:       zlib with acknowledgement
 
@@ -130,6 +131,9 @@ fi
 
 
 %changelog
+* Sat Jul 08 2017 Artur Iwicki <fedora@svgames.pl> 1.2-12.20170412.git.ee1ca09e
+- Modify release number to include snapshot info
+
 * Wed Jun 07 2017 Artur Iwicki <fedora@svgames.pl> 1.2-11
 - Rename the SDL_Mixer-removing patch to a more descriptive name
 - Add a patch file that addresses build failures on ppc64
