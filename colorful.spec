@@ -1,28 +1,18 @@
 %global repo_name LD25
-%global repo_commit ee1ca09e36e5d1290295a7def567f31f1b551300 
+%global repo_commit 4db365affc9d82ba2d9d84622ec6e7c6ec5152b6
 %global shortcommit %(c=%{repo_commit}; echo ${c:0:7})
 
 Name:          colorful
 Version:       1.2
-Release:       12.20170412.git.%{shortcommit}%{?dist}
+Release:       13.20170707.git.%{shortcommit}%{?dist}
 Summary:       Side-view shooter game
 License:       zlib with acknowledgement
 
 URL:           https://svgames.pl
 Source0:       https://github.com/suve/%{repo_name}/archive/%{repo_commit}.tar.gz#/%{repo_name}-%{repo_commit}.tar.gz
 
-# Upstream uses a bundled version of SDL_Mixer.pas to avoid dependency on smpeg.
-# However, since FPC 3.0, the compiler includes an smpeg-disabled version of SDL_Mixer by default.
-# The patch removes the bundled library, and makes the game code 
-# use the compiler-provided smpeg-disabled library instead.
-Patch0:        %{name}-removes-bundled-sdlmixer.patch
-
-# While other architectures build without problems, the compiler on ppc64 seems to be particularly picky.
-# This patch fixes build errors on ppc64.
-Patch1:        %{name}-ppc64-fixes.patch
-
-
 Requires:      colorful-data = %{version}-%{release}
+Requires:      hicolor-icon-theme
 
 # Needed for compilation
 BuildRequires: make, fpc >= 3.0, glibc-devel, SDL-devel, SDL_image-devel, SDL_mixer-devel, mesa-libGL-devel
@@ -30,9 +20,8 @@ BuildRequires: make, fpc >= 3.0, glibc-devel, SDL-devel, SDL_image-devel, SDL_mi
 # Needed to properly build the RPM
 BuildRequires: desktop-file-utils, libappstream-glib
 
-# FPC is not available on all architectures, so we need to skip the broken ones.
-# The following line is straight out copy-pasted from fpc.spec.
-ExclusiveArch:  %{arm} %{ix86} x86_64 ppc ppc64
+# FPC is not available on all architectures
+ExclusiveArch:  %{fpc_arches}
 
 %description
 Colorful is a simple side-view shooter game, where the protagonist 
@@ -51,8 +40,10 @@ Data files (graphics, maps, sounds) required to play Colorful.
 
 %prep
 %setup -q -n %{repo_name}-%{repo_commit}
-%patch0 -p1
-%patch1 -p1
+
+# According to the readme, these files are only needed when
+# building with FPC < 3.0.0 and can otherwise be removed.
+rm src/jedi-sdl.inc src/sdl_mixer_bundled.pas
 
 %build 
 cd src/
@@ -95,10 +86,6 @@ cp -a ./sfx/   %{buildroot}/%{_datadir}/suve/%{name}/
 cp -a ./intro/ %{buildroot}/%{_datadir}/suve/%{name}/
 cp -a ./map/   %{buildroot}/%{_datadir}/suve/%{name}/
 
-# Upstream has the executable bit set on the data files.
-# There's no need for that. It can be safely removed. 
-find %{buildroot}/%{_datadir}/suve/%{name}/ -type f -exec chmod a-x '{}' ';'
-
 
 # Needed for the icon cache to work correctly
 %post
@@ -122,15 +109,25 @@ fi
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/appdata/%{name}.appdata.xml
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
-%license LICENSE.txt
+%doc README.md
+%license LICENCE.txt
 
 
 %files data
 %{_datadir}/suve/
-%license LICENSE.txt
+%license LICENCE.txt
 
 
 %changelog
+* Sat Jul 08 2017 Artur Iwicki <fedora@svgames.pl> 1.2-13.20170707.git.4db365af
+- Update to the most recent upstream snapshot
+- Remove the ppc64-fixes patch (issues fixed upstream)
+- Remove the "find --exec chmod" call from %%install (issue fixed upstream)
+- Remove the bundled-sdl-mixer patch (delete the files in %%prep instead)
+- Mark README.md as documentation
+- Use the %%{fpc_arches} macro in ExclusiveArch tag
+- Add hicolor-icon-theme as dependency
+
 * Sat Jul 08 2017 Artur Iwicki <fedora@svgames.pl> 1.2-12.20170412.git.ee1ca09e
 - Modify release number to include snapshot info
 
