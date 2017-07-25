@@ -1,10 +1,9 @@
 %global repo_name LD25
-%global repo_commit 4db365affc9d82ba2d9d84622ec6e7c6ec5152b6
-%global shortcommit %(c=%{repo_commit}; echo ${c:0:7})
+%global repo_commit e5ecbe39b719f12a1268bcc641eae9ba364221c9 
 
 Name:          colorful
-Version:       1.2
-Release:       13.20170707.git.%{shortcommit}%{?dist}
+Version:       1.3
+Release:       1%{?dist}
 Summary:       Side-view shooter game
 License:       zlib with acknowledgement
 
@@ -13,6 +12,7 @@ Source0:       https://github.com/suve/%{repo_name}/archive/%{repo_commit}.tar.g
 
 Requires:      colorful-data = %{version}-%{release}
 Requires:      hicolor-icon-theme
+Requires:      opengl-games-utils
 
 # Needed for compilation
 BuildRequires: make, fpc >= 3.0, glibc-devel, SDL-devel, SDL_image-devel, SDL_mixer-devel, mesa-libGL-devel
@@ -45,6 +45,9 @@ Data files (graphics, maps, sounds) required to play Colorful.
 # building with FPC < 3.0.0 and can otherwise be removed.
 rm src/jedi-sdl.inc src/sdl_mixer_bundled.pas
 
+# We're going to use the OpenGL Wrapper, so we have to edit the desktop file.
+sed -e 's/^Exec=colorful$/Exec=colorful-wrapper/' -i pkg/%{name}.desktop
+
 %build 
 cd src/
 make clean
@@ -59,6 +62,7 @@ install -m 755 -d %{buildroot}/%{_datadir}/icons/hicolor/32x32/apps/
 install -m 755 -d %{buildroot}/%{_datadir}/appdata/
 
 install -m 755 -p src/%{name} %{buildroot}/%{_bindir}/%{name}
+ln -s opengl-game-wrapper.sh %{buildroot}/%{_bindir}/%{name}-wrapper
 
 install -m 644 -p pkg/%{name}-english.man  %{buildroot}/%{_mandir}/man6/%{name}.6
 install -m 644 -p pkg/%{name}-polish.man   %{buildroot}/%{_mandir}/pl/man6/%{name}.6
@@ -104,8 +108,9 @@ fi
 
 %files
 %{_bindir}/%{name}
+%{_bindir}/%{name}-wrapper
 %{_mandir}/man6/%{name}.6*
-%{_mandir}/pl/man6/%{name}.6*
+%{_mandir}/*/man6/%{name}.6*
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/appdata/%{name}.appdata.xml
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
@@ -119,7 +124,12 @@ fi
 
 
 %changelog
-* Sat Jul 08 2017 Artur Iwicki <fedora@svgames.pl> 1.2-13.20170707.git.4db365af
+* Tue Jul 25 2017 Artur Iwicki <fedora@svgames.pl> 1.3-1
+- Update to new upstream release
+- Employ the OpenGL Wrapper (as detailed on Games SIG Packaging Guidelines page)
+- Use wildcard to future-proof against more translated man pages
+
+* Sat Jul 08 2017 Artur Iwicki <fedora@svgames.pl> 1.2-13.20170707.git.4db365a
 - Update to the most recent upstream snapshot
 - Remove the ppc64-fixes patch (issues fixed upstream)
 - Remove the "find --exec chmod" call from %%install (issue fixed upstream)
@@ -128,7 +138,7 @@ fi
 - Use the %%{fpc_arches} macro in ExclusiveArch tag
 - Add hicolor-icon-theme as dependency
 
-* Sat Jul 08 2017 Artur Iwicki <fedora@svgames.pl> 1.2-12.20170412.git.ee1ca09e
+* Sat Jul 08 2017 Artur Iwicki <fedora@svgames.pl> 1.2-12.20170412.git.ee1ca09
 - Modify release number to include snapshot info
 
 * Wed Jun 07 2017 Artur Iwicki <fedora@svgames.pl> 1.2-11
