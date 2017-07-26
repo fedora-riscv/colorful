@@ -3,7 +3,7 @@
 
 Name:          colorful
 Version:       1.3
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       Side-view shooter game
 License:       zlib with acknowledgement
 
@@ -124,6 +124,9 @@ fi
 
 
 %changelog
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
 * Tue Jul 25 2017 Artur Iwicki <fedora@svgames.pl> 1.3-1
 - Update to new upstream release
 - Employ the OpenGL Wrapper (as detailed on Games SIG Packaging Guidelines page)
