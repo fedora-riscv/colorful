@@ -3,12 +3,17 @@
 
 Name:          colorful
 Version:       1.3
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       Side-view shooter game
 License:       zlib with acknowledgement
 
 URL:           https://svgames.pl
 Source0:       https://github.com/suve/%{repo_name}/archive/%{repo_commit}.tar.gz#/%{repo_name}-%{repo_commit}.tar.gz
+
+# On 32-bit architectures, FPC defaults to generating stabs-format debuginfo.
+# This patch modifies the Makefile to explicitly ask the compiler
+# to generate debuginfo in DWARF format.
+Patch0:        colorful-DWARF.patch
 
 Requires:      colorful-data = %{version}-%{release}
 Requires:      hicolor-icon-theme
@@ -40,6 +45,7 @@ Data files (graphics, maps, sounds) required to play Colorful.
 
 %prep
 %setup -q -n %{repo_name}-%{repo_commit}
+%patch0 -p1
 
 # According to the readme, these files are only needed when
 # building with FPC < 3.0.0 and can otherwise be removed.
@@ -124,6 +130,9 @@ fi
 
 
 %changelog
+* Mon Aug 07 2017 Artur Iwicki <fedora@svgames.pl> 1.3-4
+- Fix debuginfo-related build failures on i686 and armv7hl
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 

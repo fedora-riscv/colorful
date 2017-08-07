@@ -1,0 +1,13 @@
+diff --git a/src/Makefile b/src/Makefile
+index 3fbdbf7..084daec 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -9,7 +9,7 @@ FLAGS_RELEASE = -vewn -Xs -XX -CX -OG3
+ 
+ # Disable compile-time hints; enable level 3 optimisations; include gdb debug symbols
+ # The gdb debug symbols are needed for generating a -debug package.
+-FLAGS_PACKAGE = -vewn -OG3 -g
++FLAGS_PACKAGE = -vewn -OG3 -gw
+ 
+ 
+ .PHONY = debug release package clean
