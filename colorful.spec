@@ -3,7 +3,7 @@
 
 Name:          colorful
 Version:       1.3
-Release:       4%{?dist}
+Release:       5%{?dist}
 Summary:       Side-view shooter game
 License:       zlib with acknowledgement
 
@@ -97,21 +97,6 @@ cp -a ./intro/ %{buildroot}/%{_datadir}/suve/%{name}/
 cp -a ./map/   %{buildroot}/%{_datadir}/suve/%{name}/
 
 
-# Needed for the icon cache to work correctly
-%post
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-%posttrans
-/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-# End of icon cache related stuff
-
-
 %files
 %{_bindir}/%{name}
 %{_bindir}/%{name}-wrapper
@@ -130,6 +115,9 @@ fi
 
 
 %changelog
+* Sun Jan 07 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1.3-5
+- Remove obsolete scriptlets
+
 * Mon Aug 07 2017 Artur Iwicki <fedora@svgames.pl> 1.3-4
 - Fix debuginfo-related build failures on i686 and armv7hl
 
