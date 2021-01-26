@@ -3,7 +3,7 @@
 
 Name:          colorful
 Version:       1.3
-Release:       11%{?dist}
+Release:       12%{?dist}
 Summary:       Side-view shooter game
 License:       zlib with acknowledgement
 
@@ -115,6 +115,9 @@ cp -a ./map/   %{buildroot}/%{_datadir}/suve/%{name}/
 
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.3-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.3-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
