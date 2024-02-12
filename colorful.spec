@@ -1,6 +1,6 @@
 Name:          colorful
 Version:       2.0
-Release:       3%{?dist}
+Release:       3.rv64%{?dist}
 Summary:       Side-view shooter game
 
 # The game itself is GPLv3.
@@ -29,7 +29,7 @@ BuildRequires: desktop-file-utils
 BuildRequires: libappstream-glib
 
 # FPC is not available on all architectures
-ExclusiveArch:  %{fpc_arches}
+ExclusiveArch:  %{fpc_arches} riscv64
 
 %description
 Colorful is a simple side-view shooter game, where the protagonist 
